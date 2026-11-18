@@ -1,0 +1,412 @@
+
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071b35">
+<title>Habesha Calendar</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ padding:15px;
+ background:#071b35;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+
+header{text-align:center;padding:15px 5px}
+
+h1{color:#f5c45e;font-size:32px}
+
+button{
+ border:0;
+ border-radius:12px;
+ padding:12px;
+ background:#f5c45e;
+ color:#071b35;
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+button:active{transform:scale(.97)}
+
+.card{
+ background:#122e50;
+ padding:20px;
+ border-radius:22px;
+ margin:18px 0;
+}
+
+.today{text-align:center;padding:28px 15px}
+
+.today h1{
+ font-size:65px;
+ margin:20px;
+}
+
+.today h2{font-size:25px}
+
+.top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+}
+
+.month{
+ color:#f5c45e;
+ font-size:27px;
+ text-align:center;
+ flex:1;
+}
+
+.week,.days{
+ display:grid;
+ grid-template-columns:repeat(7,minmax(0,1fr));
+ gap:5px;
+ text-align:center;
+}
+
+.week div{
+ color:#f5c45e;
+ font-size:12px;
+ font-weight:bold;
+ padding:12px 0;
+}
+
+.day{
+ background:#1b3b60;
+ border-radius:9px;
+ min-height:48px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-size:18px;
+ cursor:pointer;
+}
+
+.day.todayDate{
+ background:#f5c45e;
+ color:#071b35;
+ border:2px solid white;
+ font-weight:bold;
+}
+
+.day.selected{
+ border:2px solid #f5c45e;
+}
+
+.empty{background:transparent;cursor:default}
+
+.features{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
+}
+
+.features button{padding:17px 5px}
+
+.holiday,.reminder{
+ background:#1b3b60;
+ padding:13px;
+ border-radius:10px;
+ margin:10px 0;
+ font-size:16px;
+}
+
+input{
+ width:100%;
+ padding:13px;
+ border-radius:10px;
+ border:0;
+ margin:8px 0;
+ font-size:16px;
+}
+
+.action{
+ width:100%;
+ margin-top:10px;
+}
+
+.delete{
+ background:#d9534f;
+ color:white;
+ padding:8px 12px;
+ float:right;
+}
+
+#selectedDay{display:none;text-align:center}
+
+#selectedNumber{
+ color:#f5c45e;
+ font-size:45px;
+}
+
+footer{
+ text-align:center;
+ color:#aabbd0;
+ padding:20px;
+}
+
+hr{border-color:#8da2ba}
+
+@media(max-width:380px){
+ h1{font-size:26px}
+ .month{font-size:21px}
+ .day{min-height:42px;font-size:16px}
+ .week div{font-size:10px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🇪🇹 Habesha Calendar</h1>
+<p id="subtitle">የኢትዮጵያ ካላንደር</p>
+<button onclick="toggleLanguage()">አማርኛ / English</button>
+</header>
+
+<!-- TODAY -->
+
+<div class="card today">
+<h3 id="todayTitle">ዛሬ</h3>
+<h1 id="todayDate">--</h1>
+<h2 id="todayMonth">--</h2>
+<p id="todayYear">--</p>
+<hr>
+<p id="gregorian">--</p>
+</div>
+
+<!-- SELECTED DATE -->
+
+<div class="card" id="selectedDay">
+<h2 id="selectedTitle">የተመረጠው ቀን</h2>
+<h1 id="selectedNumber">--</h1>
+<h2 id="selectedMonth">--</h2>
+<p id="selectedInfo">--</p>
+</div>
+
+<!-- CALENDAR -->
+
+<div class="card">
+
+<div class="top">
+<button onclick="moveMonth(-1)">❮</button>
+<div class="month" id="monthTitle">--</div>
+<button onclick="moveMonth(1)">❯</button>
+</div>
+
+<br>
+
+<div class="week" id="week"></div>
+<div class="days" id="days"></div>
+
+</div>
+
+<!-- HOLIDAYS -->
+
+<div class="card">
+<h2 id="holidayTitle">🎉 የበዓላት ዝርዝር</h2>
+<div id="holidayList"></div>
+</div>
+
+<!-- FEATURES -->
+
+<div class="card">
+
+<h2 id="featureTitle" style="text-align:center">
+የካላንደር አገልግሎቶች
+</h2>
+
+<div class="features">
+<button onclick="showCalendar()">📅 Calendar</button>
+<button onclick="showConverter()">🔄 Converter</button>
+<button onclick="showHolidays()">🎉 Holidays</button>
+<button onclick="showReminder()">🔔 Reminder</button>
+</div>
+
+<div id="extra" style="margin-top:20px"></div>
+
+</div>
+
+<footer>
+Habesha Calendar 🇪🇹
+<p>Made in Ethiopia</p>
+</footer>
+
+<script>
+
+// ETHIOPIAN MONTHS
+
+const enMonths=[
+"Meskerem","Tikimt","Hedar","Tahsas",
+"Tir","Yekatit","Megabit","Miazia",
+"Ginbot","Sene","Hamle","Nehase","Pagume"
+];
+
+const amMonths=[
+"መስከረም","ጥቅምት","ሕዳር","ታኅሣሥ",
+"ጥር","የካቲት","መጋቢት","ሚያዝያ",
+"ግንቦት","ሰኔ","ሐምሌ","ነሐሴ","ጳጉሜን"
+];
+
+// WEEK DAYS
+
+const enDays=[
+"Sun","Mon","Tue","Wed","Thu","Fri","Sat"
+];
+
+const amDays=[
+"እሑድ","ሰኞ","ማክሰኞ","ረቡዕ",
+"ሐሙስ","ዓርብ","ቅዳሜ"
+];
+
+// ETHIOPIAN DATE FORMATTER
+
+const ethFormatter=new Intl.DateTimeFormat(
+"en-US-u-ca-ethiopic-nu-latn",
+{
+ day:"numeric",
+ month:"numeric",
+ year:"numeric"
+}
+);
+
+// GET ETHIOPIAN DATE
+
+function getParts(date){
+
+ const parts=ethFormatter.formatToParts(date);
+
+ const get=t=>Number(
+ parts.find(x=>x.type===t).value
+ );
+
+ return {
+  day:get("day"),
+  month:get("month")-1,
+  year:get("year")
+ };
+}
+
+// CURRENT DATE
+
+const now=new Date();
+const current=getParts(now);
+
+let selectedMonth=current.month;
+let selectedYear=current.year;
+let lang="am";
+
+// MONTH DATES
+
+function getMonthDates(year,month){
+
+ const result=[];
+
+ const start=new Date(year+7,8,1,12);
+ const end=new Date(year+8,9,15,12);
+
+ for(
+  let d=new Date(start);
+  d<=end;
+  d.setDate(d.getDate()+1)
+ ){
+
+  const p=getParts(d);
+
+  if(p.year===year && p.month===month){
+
+   result.push({
+    day:p.day,
+    date:new Date(d),
+    weekday:d.getDay()
+   });
+
+  }
+ }
+
+ return result;
+}
+
+// LANGUAGE
+
+function toggleLanguage(){
+
+ lang=lang==="am"?"en":"am";
+
+ render();
+
+}
+
+// CHANGE MONTH
+
+function moveMonth(amount){
+
+ selectedMonth+=amount;
+
+ if(selectedMonth>12){
+  selectedMonth=0;
+  selectedYear++;
+ }
+
+ if(selectedMonth<0){
+  selectedMonth=12;
+  selectedYear--;
+ }
+
+ render();
+
+}
+
+// SELECT DATE
+
+function selectDate(timestamp){
+
+ const date=new Date(timestamp);
+ const p=getParts(date);
+
+ const months=lang==="am"?amMonths:enMonths;
+
+ document.getElementById("selectedDay").style.display="block";
+
+ document.getElementById("selectedTitle").textContent=
+ lang==="am"?"የተመረጠው ቀን":"Selected Date";
+
+ document.getElementById("selectedNumber").textContent=p.day;
+
+ document.getElementById("selectedMonth").textContent=
+ months[p.month];
+
+ document.getElementById("selectedInfo").textContent=
+ (lang==="am"?"ዓመተ ምህረት ":"Ethiopian Year ")+p.year;
+
+}
+
+// HOLIDAYS
+
+const holidays=[
+ {m:0,d:17,am:"መስቀል",en:"Meskel"},
+ {m:3,d:29,am:"ገና",en:"Christmas"},
+ {m:4,d:11,am:"ጥምቀት",en:"Timket"},
+ {m:5,d:23,am:"የዓድዋ ድል",en:"Adwa Victory Day"},
+ {m:7,d:27,am:"የአርበኞች ቀን",en:"Patriots' Day"}
+];
+
+// RENDER HOLIDAYS
+
+function renderHolidays(){
+
+ const list=holidays.filter(
+  h=>h.m===selectedMonth
+ );
+
+ document.getElementById("holidayTitle").textContent=
+Habesha Calendar - Ethiopian Calendar
+Visibility
