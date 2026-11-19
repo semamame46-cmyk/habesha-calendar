@@ -1,0 +1,13 @@
+
+{
+  "id": "/habesha-calendar/",
+  "name": "Habesha Calendar",
+  "short_name": "Habesha",
+  "description": "Ethiopian Calendar in Amharic and English.",
+  "start_url": "/habesha-calendar/",
+  "scope": "/habesha-calendar/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1224",
+  "theme_color": "#14264b"
+}
