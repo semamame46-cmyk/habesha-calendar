@@ -1,424 +1,124 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101d3a">
 <title>Habesha Calendar</title>
-<link rel="manifest" href="manifest.json">
-
- 
 <style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0b1224;
-  color:#fff;
-}
-header{
-  background:#14264b;
-  padding:22px 15px;
-  text-align:center;
-  border-bottom:2px solid #d6aa45;
-}
-header h1{margin:0;color:#f4c75e;font-size:25px}
-header p{margin:7px 0 0;color:#d7deed}
-.container{max-width:650px;margin:auto;padding:15px}
-.topbar{
-  display:flex;justify-content:space-between;
-  align-items:center;gap:10px;margin-bottom:15px;
-}
-button,select,input{
-  border:0;border-radius:8px;padding:11px;
-  font-size:15px;
-}
-button{
-  background:#d6aa45;color:#17213b;
-  font-weight:bold;cursor:pointer;
-}
-.language{background:#26385e;color:white}
-.today{
-  background:#172b50;border:1px solid #d6aa45;
-  border-radius:12px;padding:15px;margin-bottom:15px;
-  text-align:center;
-}
-.today h2{color:#f4c75e;margin:5px}
-.today p{margin:7px 0}
-.calendar{
-  background:#14213d;border-radius:12px;
-  padding:12px;border:1px solid #304367;
-}
-.monthbar{
-  display:flex;justify-content:space-between;
-  align-items:center;margin-bottom:12px;
-}
-.monthbar h2{font-size:19px;color:#f4c75e}
-.weekdays,.days{
-  display:grid;grid-template-columns:repeat(7,1fr);
-  gap:5px;text-align:center;
-}
-.weekdays div{
-  color:#e5bd60;font-size:12px;font-weight:bold;
-  padding:8px 0;
-}
-.day{
-  min-height:49px;background:#203254;
-  border-radius:7px;padding:7px 2px;
-  cursor:pointer;display:flex;
-  flex-direction:column;align-items:center;
-  justify-content:center;font-size:15px;
-}
-.day small{font-size:9px;color:#b7c5dd;margin-top:3px}
-.day.todayday{border:2px solid #e9bd50;color:#ffd76c}
-.day.selected{background:#d6aa45;color:#15213a;font-weight:bold}
-.day.selected small{color:#15213a}
-.day.empty{background:transparent;cursor:default}
-.section{
-  background:#14213d;border:1px solid #304367;
-  border-radius:12px;padding:15px;margin-top:15px;
-}
-.section h3{color:#f4c75e;margin-top:0}
-.section input{width:100%;margin:7px 0;background:#fff;color:#111}
-.result{
-  background:#203254;padding:12px;
-  border-radius:8px;margin-top:10px;min-height:42px;
-}
-.note-row{display:flex;gap:7px}
-.note-row input{flex:1;min-width:0}
-#notes{padding-left:20px}
-#notes li{margin:8px 0;overflow-wrap:anywhere}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#0b1224;color:#fff}
+header{background:#14264b;padding:22px 15px;text-align:center;border-bottom:2px solid #d6aa45}
+header h1{margin:0;color:#f4c75e;font-size:25px}header p{margin:7px 0 0;color:#d7deed}
+.container{max-width:650px;margin:auto;padding:15px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+button,select,input{border:0;border-radius:8px;padding:11px;font-size:15px}button{background:#d6aa45;color:#17213b;font-weight:bold;cursor:pointer}.language{background:#26385e;color:white}
+.today{background:#172b50;border:1px solid #d6aa45;border-radius:12px;padding:15px;margin-bottom:15px;text-align:center}
+.today h2{color:#f4c75e;margin:5px}.today p{margin:7px 0}.calendar{background:#14213d;border-radius:12px;padding:12px;border:1px solid #304367}
+.monthbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.monthbar h2{font-size:19px;color:#f4c75e}
+.weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}.weekdays div{color:#e5bd60;font-size:12px;font-weight:bold;padding:8px 0}
+.day{min-height:49px;background:#203254;border-radius:7px;padding:7px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:15px}
+.day small{font-size:9px;color:#b7c5dd;margin-top:3px}.day .holiday{font-size:8px;color:#ffd76c;margin-top:3px;text-align:center;line-height:1.2;overflow-wrap:anywhere}
+.day.todayday{border:2px solid #e9bd50;color:#ffd76c}.day.selected{background:#d6aa45;color:#15213a;font-weight:bold}.day.selected small,.day.selected .holiday{color:#15213a}.day.empty{background:transparent;cursor:default}
+.section{background:#14213d;border:1px solid #304367;border-radius:12px;padding:15px;margin-top:15px}.section h3{color:#f4c75e;margin-top:0}
+.section input{width:100%;margin:7px 0;background:#fff;color:#111}.result{background:#203254;padding:12px;border-radius:8px;margin-top:10px;min-height:42px}
+.note-row{display:flex;gap:7px}.note-row input{flex:1;min-width:0}#notes{padding-left:20px}#notes li{margin:8px 0;overflow-wrap:anywhere}
 footer{text-align:center;color:#8998b5;padding:25px 10px;font-size:12px}
 </style>
 </head>
-
 <body>
-<header>
-  <h1>🇪🇹 Habesha Calendar</h1>
-  <p id="subtitle">Ethiopian Calendar</p>
-</header>
-
+<header><h1>🇪🇹 Habesha Calendar</h1><p id="subtitle">Ethiopian Calendar</p></header>
 <div class="container">
-
-  <div class="topbar">
-    <button onclick="goToday()" id="todayBtn">Today</button>
-    <button class="language" onclick="toggleLanguage()" id="langBtn">አማርኛ</button>
-  </div>
-
-  <div class="today">
-    <p id="todayLabel">Today's Ethiopian Date</p>
-    <h2 id="todayDate">Loading...</h2>
-    <p id="gregorianDate"></p>
-  </div>
-
-  <div class="calendar">
-    <div class="monthbar">
-      <button onclick="changeMonth(-1)">❮</button>
-      <h2 id="monthTitle"></h2>
-      <button onclick="changeMonth(1)">❯</button>
-    </div>
-
-    <div class="weekdays" id="weekdays"></div>
-    <div class="days" id="days"></div>
-  </div>
-
-  <div class="section">
-    <h3 id="selectedTitle">Selected Date</h3>
-    <div class="result" id="selectedDate">Select a date</div>
-  </div>
-
-  <div class="section">
-    <h3 id="converterTitle">Gregorian to Ethiopian Converter</h3>
-    <label id="chooseDate">Choose Gregorian date:</label>
-    <input type="date" id="gregInput">
-    <button onclick="convertDate()" id="convertBtn">Convert Date</button>
-    <div class="result" id="conversionResult"></div>
-  </div>
-
-  <div class="section">
-    <h3 id="reminderTitle">My Reminders</h3>
-    <div class="note-row">
-      <input id="noteInput" type="text" placeholder="Write a reminder...">
-      <button onclick="addNote()" id="addBtn">Add</button>
-    </div>
-    <ul id="notes"></ul>
-  </div>
-
+<div class="topbar"><button onclick="goToday()" id="todayBtn">Today</button><button class="language" onclick="toggleLanguage()" id="langBtn">አማርኛ</button></div>
+<div class="today"><p id="todayLabel">Today's Ethiopian Date</p><h2 id="todayDate">Loading...</h2><p id="gregorianDate"></p></div>
+<div class="calendar"><div class="monthbar"><button onclick="changeMonth(-1)">❮</button><h2 id="monthTitle"></h2><button onclick="changeMonth(1)">❯</button></div><div class="weekdays" id="weekdays"></div><div class="days" id="days"></div></div>
+<div class="section"><h3 id="selectedTitle">Selected Date</h3><div class="result" id="selectedDate">Select a date</div></div>
+<div class="section"><h3 id="converterTitle">Gregorian to Ethiopian Converter</h3><label id="chooseDate">Choose Gregorian date:</label><input type="date" id="gregInput"><button onclick="convertDate()" id="convertBtn">Convert Date</button><div class="result" id="conversionResult"></div></div>
+<div class="section"><h3 id="reminderTitle">My Reminders</h3><div class="note-row"><input id="noteInput" type="text" placeholder="Write a reminder..."><button onclick="addNote()" id="addBtn">Add</button></div><ul id="notes"></ul></div>
 </div>
-
-<footer>Habesha Calendar • Ethiopian Calendar App</footer>
-
+<footer>Habesha Calendar • Ethiopian Calendar App<br>Islamic holiday dates are estimates and may shift by one day after local moon sighting.</footer>
 <script>
-const monthsAm = [
- "መስከረም","ጥቅምት","ኅዳር","ታኅሣሥ",
- "ጥር","የካቲት","መጋቢት","ሚያዝያ",
- "ግንቦት","ሰኔ","ሐምሌ","ነሐሴ","ጳጉሜን"
+const monthsAm=["መስከረም","ጥቅምት","ኅዳር","ታኅሣሥ","ጥር","የካቲት","መጋቢት","ሚያዝያ","ግንቦት","ሰኔ","ሐምሌ","ነሐሴ","ጳጉሜን"];
+const monthsEn=["Meskerem","Tikimt","Hidar","Tahsas","Tir","Yekatit","Megabit","Miyazya","Ginbot","Sene","Hamle","Nehase","Pagume"];
+const daysAm=["እሑድ","ሰኞ","ማክሰኞ","ረቡዕ","ሐሙስ","ዓርብ","ቅዳሜ"],daysEn=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const etFormatter=new Intl.DateTimeFormat("en-US-u-ca-ethiopic-nu-latn",{year:"numeric",month:"numeric",day:"numeric"});
+const gregFormatter=new Intl.DateTimeFormat("en-US",{year:"numeric",month:"long",day:"numeric"});
+function etParts(date){const parts=etFormatter.formatToParts(date),get=t=>Number(parts.find(p=>p.type===t).value);return{year:get("year"),month:get("month"),day:get("day")};}
+function dateAtNoon(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate(),12);}
+function findMonthStart(year,month,anchor){const base=dateAtNoon(anchor);for(let i=-60;i<=60;i++){const d=new Date(base);d.setDate(base.getDate()+i);const p=etParts(d);if(p.year===year&&p.month===month&&p.day===1)return d;}return null;}
+const now=dateAtNoon(new Date()),current=etParts(now);
+let viewYear=current.year,viewMonth=current.month,selectedDate=now,language="en";
+// Fixed-date Ethiopian holidays.
+const fixedHolidays=[
+{month:1,day:1,en:"Ethiopian New Year",am:"እንቁጣጣሽ"},
+{month:1,day:17,en:"Meskel",am:"መስቀል"},
+{month:4,day:29,en:"Ethiopian Christmas",am:"ገና"},
+{month:5,day:11,en:"Timkat",am:"ጥምቀት"},
+{month:6,day:23,en:"Adwa Victory Day",am:"የዓድዋ ድል"}
 ];
-
-const monthsEn = [
- "Meskerem","Tikimt","Hidar","Tahsas",
- "Tir","Yekatit","Megabit","Miyazya",
- "Ginbot","Sene","Hamle","Nehase","Pagume"
+// Islamic dates are estimated with the Umm al-Qura calendar.
+// Ethiopia's official observance can differ by a day after local moon sighting.
+const islamicFormatter=new Intl.DateTimeFormat("en-US-u-ca-islamic-umalqura-nu-latn",{year:"numeric",month:"numeric",day:"numeric"});
+const islamicHolidays=[
+ {month:10,day:1,en:"Eid al-Fitr (estimated)",am:"ዒድ አልፈጥር (ግምታዊ)"},
+ {month:12,day:10,en:"Eid al-Adha (estimated)",am:"ዒድ አልአድሃ (ግምታዊ)"},
+ {month:3,day:12,en:"Mawlid (estimated)",am:"መውሊድ (ግምታዊ)"}
 ];
-
-const daysAm = ["እሑድ","ሰኞ","ማክሰኞ","ረቡዕ","ሐሙስ","ዓርብ","ቅዳሜ"];
-const daysEn = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
-const etFormatter = new Intl.DateTimeFormat(
- "en-US-u-ca-ethiopic-nu-latn",
- {year:"numeric",month:"numeric",day:"numeric"}
-);
-
-const gregFormatter = new Intl.DateTimeFormat(
- "en-US",
- {year:"numeric",month:"long",day:"numeric"}
-);
-
-function etParts(date){
- const parts = etFormatter.formatToParts(date);
- const get = type => Number(parts.find(p=>p.type===type).value);
- return {
-  year:get("year"),
-  month:get("month"),
-  day:get("day")
- };
-}
-
-function dateAtNoon(date){
- return new Date(date.getFullYear(),date.getMonth(),date.getDate(),12);
-}
-
-function findMonthStart(year,month,anchor){
- const base = dateAtNoon(anchor);
- for(let i=-60;i<=60;i++){
-  const d = new Date(base);
-  d.setDate(base.getDate()+i);
-  const p = etParts(d);
-  if(p.year===year && p.month===month && p.day===1){
-   return d;
-  }
- }
- return null;
-}
-
-const now = dateAtNoon(new Date());
-const current = etParts(now);
-
-let viewYear = current.year;
-let viewMonth = current.month;
-let selectedDate = now;
-let language = "en";
-
-function monthName(month){
- return language==="am" ? monthsAm[month-1] : monthsEn[month-1];
-}
-
-function formatEthiopian(date){
+function holidayFor(date){
  const p=etParts(date);
- return `${p.day} ${monthName(p.month)} ${p.year}`;
+ const fixed=fixedHolidays.find(h=>h.month===p.month&&h.day===p.day);
+ if(fixed)return fixed;
+ try{
+  const parts=islamicFormatter.formatToParts(date);
+  const get=t=>Number(parts.find(x=>x.type===t).value);
+  const im=get("month"),id=get("day");
+  return islamicHolidays.find(h=>h.month===im&&h.day===id)||null;
+ }catch(error){return null;}
 }
-
+function monthName(m){return language==="am"?monthsAm[m-1]:monthsEn[m-1];}
+function formatEthiopian(date){const p=etParts(date);return `${p.day} ${monthName(p.month)} ${p.year}`;}
 function render(){
- const monthStart=findMonthStart(
-  viewYear,viewMonth,selectedDate
- );
-
- if(!monthStart){
-  document.getElementById("monthTitle").textContent="Calendar unavailable";
-  return;
- }
-
- const p=etParts(monthStart);
- const nextStart=findMonthStart(
-  viewMonth===13 ? viewYear+1 : viewYear,
-  viewMonth===13 ? 1 : viewMonth+1,
-  new Date(monthStart.getTime()+35*86400000)
- );
-
- const totalDays=nextStart
-  ? Math.round((nextStart-monthStart)/86400000)
-  : 30;
-
- document.getElementById("monthTitle").textContent =
-  `${monthName(viewMonth)} ${viewYear}`;
-
- const weekdays=language==="am"?daysAm:daysEn;
- document.getElementById("weekdays").innerHTML=
-  weekdays.map(d=>`<div>${d}</div>`).join("");
-
- const firstWeekday=monthStart.getDay();
- let html="";
-
- for(let i=0;i<firstWeekday;i++){
-  html+='<div class="day empty"></div>';
- }
-
+ const monthStart=findMonthStart(viewYear,viewMonth,selectedDate);
+ if(!monthStart){document.getElementById("monthTitle").textContent="Calendar unavailable";return;}
+ const nextStart=findMonthStart(viewMonth===13?viewYear+1:viewYear,viewMonth===13?1:viewMonth+1,new Date(monthStart.getTime()+35*86400000));
+ const totalDays=nextStart?Math.round((nextStart-monthStart)/86400000):30;
+ document.getElementById("monthTitle").textContent=`${monthName(viewMonth)} ${viewYear}`;
+ document.getElementById("weekdays").innerHTML=(language==="am"?daysAm:daysEn).map(d=>`<div>${d}</div>`).join("");
+ let html="";for(let i=0;i<monthStart.getDay();i++)html+='<div class="day empty"></div>';
  for(let day=1;day<=totalDays;day++){
-  const date=new Date(monthStart);
-  date.setDate(monthStart.getDate()+day-1);
-
-  const isToday=date.toDateString()===now.toDateString();
-  const isSelected=date.toDateString()===selectedDate.toDateString();
-
-  html+=`
-   <div class="day ${isToday?"todayday":""} ${isSelected?"selected":""}"
-        onclick="selectDay(${date.getFullYear()},${date.getMonth()},${date.getDate()})">
-    ${day}
-    <small>${date.getDate()}/${date.getMonth()+1}</small>
-   </div>`;
+  const date=new Date(monthStart);date.setDate(monthStart.getDate()+day-1);
+  const isToday=date.toDateString()===now.toDateString(),isSelected=date.toDateString()===selectedDate.toDateString(),h=holidayFor(date),hn=h?(language==="am"?h.am:h.en):"";
+  html+=`<div class="day ${isToday?"todayday":""} ${isSelected?"selected":""}" onclick="selectDay(${date.getFullYear()},${date.getMonth()},${date.getDate()})">${day}<small>${date.getDate()}/${date.getMonth()+1}</small>${hn?`<span class="holiday">${hn}</span>`:""}</div>`;
  }
-
  document.getElementById("days").innerHTML=html;
- document.getElementById("selectedDate").textContent=
-  formatEthiopian(selectedDate)+" • "+gregFormatter.format(selectedDate);
+ const h=holidayFor(selectedDate),hn=h?(language==="am"?h.am:h.en):"";
+ document.getElementById("selectedDate").textContent=formatEthiopian(selectedDate)+" • "+gregFormatter.format(selectedDate)+(hn?" • "+hn:"");
 }
-
-function selectDay(year,month,day){
- selectedDate=new Date(year,month,day,12);
- render();
-}
-
-function changeMonth(amount){
- let index=viewYear*13+(viewMonth-1)+amount;
- viewYear=Math.floor(index/13);
- viewMonth=((index%13)+13)%13+1;
-
- const anchor=new Date(
-  selectedDate.getTime()+amount*30*86400000
- );
-
- const start=findMonthStart(viewYear,viewMonth,anchor);
- if(start) selectedDate=start;
- render();
-}
-
-function goToday(){
- viewYear=current.year;
- viewMonth=current.month;
- selectedDate=now;
- render();
-}
-
-function convertDate(){
- const value=document.getElementById("gregInput").value;
- const output=document.getElementById("conversionResult");
-
- if(!value){
-  output.textContent=language==="am"?"ቀን ይምረጡ":"Please choose a date.";
-  return;
- }
-
- const date=new Date(value+"T12:00:00");
- output.textContent=formatEthiopian(date);
-}
-
-function toggleLanguage(){
- language=language==="en"?"am":"en";
- updateLanguage();
- render();
-}
-
+function selectDay(y,m,d){selectedDate=new Date(y,m,d,12);render();}
+function changeMonth(amount){let index=viewYear*13+(viewMonth-1)+amount;viewYear=Math.floor(index/13);viewMonth=((index%13)+13)%13+1;const anchor=new Date(selectedDate.getTime()+amount*30*86400000),start=findMonthStart(viewYear,viewMonth,anchor);if(start)selectedDate=start;render();}
+function goToday(){viewYear=current.year;viewMonth=current.month;selectedDate=now;render();}
+function convertDate(){const value=document.getElementById("gregInput").value,out=document.getElementById("conversionResult");if(!value){out.textContent=language==="am"?"ቀን ይምረጡ":"Please choose a date.";return;}const date=new Date(value+"T12:00:00"),h=holidayFor(date),hn=h?(language==="am"?h.am:h.en):"";out.textContent=formatEthiopian(date)+(hn?" • "+hn:"");}
+function toggleLanguage(){language=language==="en"?"am":"en";updateLanguage();render();}
 function updateLanguage(){
- const am=language==="am";
- document.documentElement.lang=am?"am":"en";
-
- document.getElementById("subtitle").textContent=
-  am?"የኢትዮጵያ ካላንደር":"Ethiopian Calendar";
-
- document.getElementById("todayBtn").textContent=
-  am?"ዛሬ":"Today";
-
- document.getElementById("langBtn").textContent=
-  am?"English":"አማርኛ";
-
- document.getElementById("todayLabel").textContent=
-  am?"የዛሬ የኢትዮጵያ ቀን":"Today's Ethiopian Date";
-
- document.getElementById("selectedTitle").textContent=
-  am?"የተመረጠ ቀን":"Selected Date";
-
- document.getElementById("converterTitle").textContent=
-  am?"ግሪጎሪያንን ወደ ኢትዮጵያ ቀን መቀየር":
-  "Gregorian to Ethiopian Converter";
-
- document.getElementById("chooseDate").textContent=
-  am?"የግሪጎሪያን ቀን ይምረጡ፦":"Choose Gregorian date:";
-
- document.getElementById("convertBtn").textContent=
-  am?"ቀይር":"Convert Date";
-
- document.getElementById("reminderTitle").textContent=
-  am?"የእኔ ማስታወሻዎች":"My Reminders";
-
- document.getElementById("noteInput").placeholder=
-  am?"ማስታወሻ ይጻፉ...":"Write a reminder...";
-
- document.getElementById("addBtn").textContent=
-  am?"ጨምር":"Add";
-
- document.getElementById("todayDate").textContent=
-  formatEthiopian(now);
-
- document.getElementById("gregorianDate").textContent=
-  gregFormatter.format(now);
+ const am=language==="am";document.documentElement.lang=am?"am":"en";
+ document.getElementById("subtitle").textContent=am?"የኢትዮጵያ ካላንደር":"Ethiopian Calendar";
+ document.getElementById("todayBtn").textContent=am?"ዛሬ":"Today";
+ document.getElementById("langBtn").textContent=am?"English":"አማርኛ";
+ document.getElementById("todayLabel").textContent=am?"የዛሬ የኢትዮጵያ ቀን":"Today's Ethiopian Date";
+ document.getElementById("selectedTitle").textContent=am?"የተመረጠ ቀን":"Selected Date";
+ document.getElementById("converterTitle").textContent=am?"ግሪጎሪያንን ወደ ኢትዮጵያ ቀን መቀየር":"Gregorian to Ethiopian Converter";
+ document.getElementById("chooseDate").textContent=am?"የግሪጎሪያን ቀን ይምረጡ፦":"Choose Gregorian date:";
+ document.getElementById("convertBtn").textContent=am?"ቀይር":"Convert Date";
+ document.getElementById("reminderTitle").textContent=am?"የእኔ ማስታወሻዎች":"My Reminders";
+ document.getElementById("noteInput").placeholder=am?"ማስታወሻ ይጻፉ...":"Write a reminder...";
+ document.getElementById("addBtn").textContent=am?"ጨምር":"Add";
+ document.getElementById("todayDate").textContent=formatEthiopian(now);document.getElementById("gregorianDate").textContent=gregFormatter.format(now);
 }
-
-function addNote(){
- const input=document.getElementById("noteInput");
- const value=input.value.trim();
- if(!value)return;
-
- const notes=JSON.parse(localStorage.getItem("habeshaNotes")||"[]");
- notes.push(value);
- localStorage.setItem("habeshaNotes",JSON.stringify(notes));
- input.value="";
- showNotes();
-}
-
-function deleteNote(index){
- const notes=JSON.parse(localStorage.getItem("habeshaNotes")||"[]");
- notes.splice(index,1);
- localStorage.setItem("habeshaNotes",JSON.stringify(notes));
- showNotes();
-}
-
-function showNotes(){
- const notes=JSON.parse(localStorage.getItem("habeshaNotes")||"[]");
- document.getElementById("notes").innerHTML=
-  notes.map((note,index)=>`
-   <li>${escapeHTML(note)}
-    <button onclick="deleteNote(${index})">×</button>
-   </li>`).join("");
-}
-
-function escapeHTML(value){
- return value.replace(/[&<>"']/g,char=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#039;"
- }[char]));
-}
-
-document.getElementById("gregInput").value=
- new Date().toLocaleDateString("en-CA");
-
-document.getElementById("todayDate").textContent=
- formatEthiopian(now);
-
-document.getElementById("gregorianDate").textContent=
- gregFormatter.format(now);
-
-updateLanguage();
-showNotes();
-render();
-</script>
- <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js")
-      .catch(error => console.log("SW error:", error));
-  });
-}
+function addNote(){const input=document.getElementById("noteInput"),value=input.value.trim();if(!value)return;const notes=JSON.parse(localStorage.getItem("habeshaNotes")||"[]");notes.push(value);localStorage.setItem("habeshaNotes",JSON.stringify(notes));input.value="";showNotes();}
+function deleteNote(index){const notes=JSON.parse(localStorage.getItem("habeshaNotes")||"[]");notes.splice(index,1);localStorage.setItem("habeshaNotes",JSON.stringify(notes));showNotes();}
+function showNotes(){const notes=JSON.parse(localStorage.getItem("habeshaNotes")||"[]");document.getElementById("notes").innerHTML=notes.map((note,index)=>`<li>${escapeHTML(note)} <button onclick="deleteNote(${index})">×</button></li>`).join("");}
+function escapeHTML(value){return value.replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));}
+document.getElementById("gregInput").value=new Date().toLocaleDateString("en-CA");
+document.getElementById("todayDate").textContent=formatEthiopian(now);document.getElementById("gregorianDate").textContent=gregFormatter.format(now);
+updateLanguage();showNotes();render();
 </script>
 </body>
 </html>
