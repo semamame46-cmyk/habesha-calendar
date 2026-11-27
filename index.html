@@ -121,5 +121,20 @@ document.getElementById("gregInput").value=new Date().toLocaleDateString("en-CA"
 document.getElementById("todayDate").textContent=formatEthiopian(now);document.getElementById("gregorianDate").textContent=gregFormatter.format(now);
 updateLanguage();showNotes();render();
 </script>
+ 
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register(
+      "/habesha-calendar/sw.js"
+    ).then(() => {
+      console.log("Service Worker registered");
+    }).catch(error => {
+      console.error("Service Worker registration failed:", error);
+    });
+  });
+}
+</script>
+
 </body>
 </html>
